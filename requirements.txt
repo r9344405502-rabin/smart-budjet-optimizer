@@ -10,7 +10,7 @@ httpcore2==2.13.1
 httpx2==2.13.1
 idna==3.20
 jiter==0.17.0
-mysqlclient==2.3.0
+
 openai==3.24.0
 pdfkit==1.0.0
 pyasn1==0.6.4
