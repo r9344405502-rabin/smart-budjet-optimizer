@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Financial Goals | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div>
+            <span class="badge badge-emerald">Capital Growth & Wealth Acceleration</span>
+            <h1 style="font-size: 2.2rem; margin-top: 0.25rem;">Financial Goals & Investments</h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                Target emergency liquidity, major asset purchases, and long-term compounding investments.
+            </p>
+        </div>
+        <div>
+            <a href="/dashboard/" class="btn btn-outline">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- AI Investment Guidance Banner -->
+    <div class="card" style="border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05); margin-bottom: 2rem;">
+        <div class="card-header" style="margin-bottom: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.25rem;">📈</span>
+                <h3 style="color: #6EE7B7; font-size: 1.15rem;">AI Investment Suggestion: The Three-Bucket Rule</h3>
+            </div>
+            <span class="badge badge-emerald">Wealth Best Practice</span>
+        </div>
+        <p style="color: #CBD5E1; font-size: 0.9rem; line-height: 1.6;">
+            1. <strong>Liquid Safety:</strong> Build 3 to 6 months in a cash high-yield savings account before stock exposure.<br>
+            2. <strong>Low-Cost Indexing:</strong> Automate regular contributions into broad market ETFs (e.g. S&P 500 or Total World Stock Index).<br>
+            3. <strong>Long-Term Horizon:</strong> Avoid speculative trading. Rupee-cost average surplus income for steady 8-10% historical compounding.
+        </p>
+    </div>
+
+    <!-- Add Goal Form Card -->
+    <div class="card" style="margin-bottom: 2.5rem;">
+        <h3 style="margin-bottom: 1.25rem; font-size: 1.2rem;">+ Establish New Financial Goal</h3>
+        <form method="POST" action="/goals/add/">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="name">Goal Objective Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. S&P 500 ETF Fund, Downpayment" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="goal_type">Goal Classification</label>
+                    <select class="form-control" id="goal_type" name="goal_type">
+                        <option value="Savings">Emergency / Liquid Savings</option>
+                        <option value="Purchase">Major Asset or Purchase</option>
+                        <option value="Investment">Long-Term Investment & Wealth</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="target_amount">Target Capital ({{ currency_symbol }})</label>
+                    <input type="number" step="0.01" class="form-control" id="target_amount" name="target_amount" placeholder="5000" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="current_amount">Starting Capital ({{ currency_symbol }})</label>
+                    <input type="number" step="0.01" class="form-control" id="current_amount" name="current_amount" value="0.00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="deadline">Target Milestone Date</label>
+                    <input type="date" class="form-control" id="deadline" name="deadline">
+                </div>
+            </div>
+
+            <div style="text-align: right; margin-top: 0.5rem;">
+                <button type="submit" class="btn btn-primary" style="padding: 0.65rem 2rem;">
+                    Launch Goal with AI Oversight
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Active Goals Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        {% for goal in goals %}
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3 style="font-size: 1.15rem;">{{ goal.name }}</h3>
+                    <span class="badge badge-indigo" style="margin-top: 0.25rem;">{{ goal.goal_type }}</span>
+                </div>
+                <span class="badge badge-emerald">{{ goal.progress_percentage }}% Complete</span>
+            </div>
+
+            <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-heading); color: #34D399; margin-bottom: 0.5rem;">
+                {{ currency_symbol }}{{ goal.current_amount|floatformat:2 }} <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 400;">/ {{ currency_symbol }}{{ goal.target_amount|floatformat:2 }}</span>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: {{ goal.progress_percentage }}%;"></div>
+            </div>
+
+            {% if goal.deadline %}
+            <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;">
+                📅 Target Deadline: {{ goal.deadline }}
+            </div>
+            {% endif %}
+
+            {% if goal.ai_suggestion %}
+            <div style="background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-sm); padding: 0.75rem; margin-top: 0.75rem; font-size: 0.82rem; color: #94A3B8;">
+                💡 <strong>AI Strategy:</strong> {{ goal.ai_suggestion }}
+            </div>
+            {% endif %}
+
+            <!-- Add Contribution Inline -->
+            <form method="POST" action="/goals/contribute/{{ goal.id }}/" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                {% csrf_token %}
+                <input type="number" step="0.01" class="form-control" name="contribution" placeholder="Add funds ({{ currency_symbol }})" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;" required>
+                <button type="submit" class="btn btn-emerald" style="padding: 0.45rem 0.9rem; font-size: 0.85rem; white-space: nowrap;">
+                    + Deposit
+                </button>
+            </form>
+        </div>
+        {% empty %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <p style="color: var(--text-muted);">No financial goals established yet. Use the form above to initialize one!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Budget Optimiser | AI-Powered Personal Finance{% endblock %}</title>
+    <meta name="description" content="AI-based personal finance management application that analyzes spending habits, eliminates unwanted expenses, and optimizes monthly budgets.">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Identity Services for Google Sign-In -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+    <!-- Professional Navbar -->
+    <header class="navbar" id="main-navbar">
+        <a href="/" class="brand-logo" id="nav-brand">
+            <div class="brand-icon">⚡</div>
+            <span>SmartBudget<span style="color: var(--primary);">.AI</span></span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" id="nav-home">Home</a></li>
+            <li><a href="/about/" class="nav-link {% if request.path == '/about/' %}active{% endif %}" id="nav-about">About</a></li>
+            <li><a href="/demo/" class="nav-link {% if request.path == '/demo/' %}active{% endif %}" id="nav-demo">Public AI Demo</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="/dashboard/" class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}" id="nav-dashboard">Dashboard</a></li>
+                <li><a href="/expenses/" class="nav-link {% if request.path == '/expenses/' %}active{% endif %}" id="nav-expenses">Expenses</a></li>
+                <li><a href="/budget/" class="nav-link {% if request.path == '/budget/' %}active{% endif %}" id="nav-budget">AI Budget</a></li>
+                <li><a href="/goals/" class="nav-link {% if request.path == '/goals/' %}active{% endif %}" id="nav-goals">Goals</a></li>
+                <li><a href="/bills/" class="nav-link {% if request.path == '/bills/' %}active{% endif %}" id="nav-bills">Bills</a></li>
+                <li><a href="/reports/" class="nav-link {% if request.path == '/reports/' %}active{% endif %}" id="nav-reports">Reports</a></li>
+                <li><a href="/assistant/" class="nav-link {% if request.path == '/assistant/' %}active{% endif %}" id="nav-assistant">AI Advisor</a></li>
+            {% endif %}
+        </ul>
+
+        <div class="nav-actions">
+
+        <div style="margin-right: 1rem;">
+            <form action="/set_currency/" method="POST" style="display: inline-block;">
+                {% csrf_token %}
+                <select name="country" onchange="this.form.submit()" style="padding: 0.3rem; border-radius: 4px; background: var(--surface-light); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    <option value="India" {% if request.session.country == 'India' %}selected{% endif %}>India ({{ currency_symbol }})</option>
+                    <option value="USA" {% if request.session.country == 'USA' %}selected{% endif %}>USA ($)</option>
+                    <option value="UK" {% if request.session.country == 'UK' %}selected{% endif %}>UK (£)</option>
+                    <option value="Europe" {% if request.session.country == 'Europe' %}selected{% endif %}>Europe (€)</option>
+                    <option value="Japan" {% if request.session.country == 'Japan' %}selected{% endif %}>Japan (¥)</option>
+                    <option value="Australia" {% if request.session.country == 'Australia' %}selected{% endif %}>Australia (A$)</option>
+                </select>
+            </form>
+        </div>
+
+            {% if user.is_authenticated %}
+                <span class="badge badge-emerald" style="text-transform: none;">
+                    👤 {{ user.username }}
+                </span>
+                {% if user.is_staff %}
+                    <a href="/admin/" class="btn btn-outline" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;" target="_blank">Admin Panel</a>
+                {% endif %}
+                <a href="/logout/" class="btn btn-outline" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;" id="nav-logout">Logout</a>
+            {% else %}
+                <a href="/login/" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.88rem;" id="nav-login-btn">
+                    Sign In
+                </a>
+                <a href="/register/" class="btn btn-primary" style="padding: 0.5rem 1.15rem; font-size: 0.88rem;" id="nav-register-btn">
+                    Get Started Free →
+                </a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Global Alerts / Messages -->
+    {% if messages %}
+        <div style="max-width: 1240px; margin: 1rem auto; padding: 0 1.5rem;">
+            {% for message in messages %}
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10B981; color: #6EE7B7; padding: 0.85rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Page Body -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="brand-logo" style="margin-bottom: 0.5rem;">
+                    <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.9rem;">⚡</div>
+                    <span>SmartBudget<span style="color: var(--primary);">.AI</span></span>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.82rem; max-width: 400px;">
+                    Enterprise AI-driven Personal Finance Optimiser. Real-time categorisation, anomaly detection, automated 50/30/20 budget allocations, and goal modeling.
+                </p>
+            </div>
+            <div>
+                <p style="color: #CBD5E1; font-weight: 600; margin-bottom: 0.5rem;">Quick Links</p>
+                <div style="display: flex; gap: 1.5rem; font-size: 0.85rem;">
+                    <a href="/about/" style="color: var(--text-secondary);">About System</a>
+                    <a href="/demo/" style="color: var(--text-secondary);">Public AI Demo</a>
+                    <a href="/admin/" style="color: var(--text-secondary);">Administrator Portal</a>
+                </div>
+            </div>
+            <div>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">
+                    © 2026 Smart Budget Optimiser Inc. All rights reserved. Built with Python & MySQL.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

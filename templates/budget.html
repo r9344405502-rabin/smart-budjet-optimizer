@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Monthly Budget | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div>
+            <span class="badge badge-indigo">Autonomous Envelope Modeling</span>
+            <h1 style="font-size: 2.2rem; margin-top: 0.25rem;">AI Monthly Budget Optimiser</h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                Calibrated allocation for <strong>{{ current_month_name }}</strong>. You can manually fine-tune any category envelope below.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <a href="/budget/generate/" class="btn btn-primary" onclick="return confirm('Regenerate budget using AI? This will recalculate category limits based on your current income.')">
+                ⚡ Regenerate with AI
+            </a>
+            <a href="/dashboard/" class="btn btn-outline">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- AI Insights Box -->
+    {% if budget.ai_insights %}
+    <div class="card" style="border: 1px solid rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.06); margin-bottom: 2rem;">
+        <div class="card-header" style="margin-bottom: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.25rem;">🧠</span>
+                <h3 style="font-size: 1.15rem; color: #C7D2FE;">AI Financial Strategy & Allocation Rationale</h3>
+            </div>
+            <span class="badge badge-indigo">50/30/20 Engine</span>
+        </div>
+        <p style="color: #CBD5E1; font-size: 0.92rem; line-height: 1.6;">
+            {{ budget.ai_insights }}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Budget Allocation Editor Form -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3>Category Envelopes & Limits</h3>
+                <p style="color: var(--text-muted); font-size: 0.82rem;">Edit limits directly and click Save Budget Changes</p>
+            </div>
+            <span class="badge badge-emerald">Total Budget: {{ currency_symbol }}{{ budget.total_allocated|floatformat:2 }}</span>
+        </div>
+
+        <form method="POST" action="/budget/update/">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+                {% for item in budget_items %}
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong style="color: #F8FAFC; font-size: 0.95rem;">{{ item.category }}</strong>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Spent: {{ currency_symbol }}{{ item.spent|floatformat:2 }}</span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label" style="font-size: 0.78rem;">Budget Envelope Limit ({{ currency_symbol }})</label>
+                        <input type="number" step="10" class="form-control" name="cat_{{ item.category }}" value="{{ item.limit }}" style="font-weight: 700; color: #34D399;">
+                    </div>
+
+                    <div class="progress-bar-container" style="margin-top: 0.4rem;">
+                        <div class="progress-bar-fill {% if item.percent > 100 %}danger{% elif item.percent > 85 %}warning{% endif %}" style="width: {% if item.percent > 100 %}100{% else %}{{ item.percent }}{% endif %}%;"></div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-top: 0.25rem;">
+                        {{ item.percent }}% utilized
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="text-align: right; margin-top: 2rem;">
+                <button type="submit" class="btn btn-emerald" style="padding: 0.75rem 2.25rem; font-size: 1rem;">
+                    💾 Save & Apply Budget Customisations
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

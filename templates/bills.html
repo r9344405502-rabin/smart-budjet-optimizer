@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bills & Recurring Reminders | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div>
+            <span class="badge badge-amber">Obligation Management</span>
+            <h1 style="font-size: 2.2rem; margin-top: 0.25rem;">Bills & Recurring Payments</h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                Stay ahead of utility deadlines, subscriptions, and loan installments.
+            </p>
+        </div>
+        <div>
+            <a href="/dashboard/" class="btn btn-outline">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Add Bill Form Card -->
+    <div class="card" style="margin-bottom: 2.5rem;">
+        <h3 style="margin-bottom: 1.25rem; font-size: 1.2rem;">+ Schedule New Bill / Recurring Obligation</h3>
+        <form method="POST" action="/bills/add/">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="name">Bill Name / Service</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Electric Utility, WiFi, Health Insurance" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="amount">Amount Due ({{ currency_symbol }})</label>
+                    <input type="number" step="0.01" class="form-control" id="amount" name="amount" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="category">Category</label>
+                    <input type="text" class="form-control" id="category" name="category" placeholder="Utilities, Insurance, Subscriptions" value="Utilities">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="due_date">Due Date</label>
+                    <input type="date" class="form-control" id="due_date" name="due_date" required>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer;">
+                    <input type="checkbox" name="is_recurring" checked> Recurring Monthly Obligation
+                </label>
+                <button type="submit" class="btn btn-primary" style="padding: 0.65rem 1.75rem;">
+                    Schedule Bill
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bills Table -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Registered Obligations</h3>
+            <span class="badge badge-indigo">Auto-Reminder Engine Active</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Bill / Obligation</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Payment Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr>
+                        <td><strong>{{ bill.name }}</strong></td>
+                        <td><span class="badge badge-indigo">{{ bill.category }}</span></td>
+                        <td style="font-weight: 700; color: #F8FAFC;">{{ currency_symbol }}{{ bill.amount|floatformat:2 }}</td>
+                        <td style="color: var(--text-muted); font-size: 0.85rem;">{{ bill.due_date }}</td>
+                        <td>
+                            {% if bill.is_paid %}
+                                <span class="badge badge-emerald">✓ Paid in Full</span>
+                            {% else %}
+                                <span class="badge badge-amber">⏳ Pending Payment</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/bills/toggle/{{ bill.id }}/" style="color: #6366F1; font-size: 0.85rem; margin-right: 0.75rem;">
+                                {% if bill.is_paid %}Mark Unpaid{% else %}Mark Paid ✓{% endif %}
+                            </a>
+                            <a href="/bills/delete/{{ bill.id }}/" onclick="return confirm('Delete this bill?')" style="color: #FB7185; font-size: 0.85rem;">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            No bills scheduled. Add your utility or insurance bills above!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; padding-top: 4rem;">
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+        <span class="badge badge-indigo">Vision & Architecture</span>
+        <h1 style="font-size: 2.8rem; margin: 0.75rem 0 1rem;">About Smart Budget Optimiser</h1>
+        <p style="color: var(--text-secondary); font-size: 1.15rem; line-height: 1.7;">
+            Bridging the gap between reactive spreadsheet accounting and proactive artificial intelligence to unlock true financial autonomy.
+        </p>
+    </div>
+
+    <!-- The Financial Problem -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: #FDA4AF; display: flex; align-items: center; gap: 0.5rem;">
+            <span>⚠️</span> The Problem: The Hidden Leaks in Modern Personal Finance
+        </h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+            Most individuals fail to reach their savings and investment potential not because of insufficient income, but due to friction in traditional money tracking. Modern digital banking is characterized by frictionless micro-transactions, automated recurring charges, and stealth lifestyle creep.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.25rem;">
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">
+                <strong style="color: #F8FAFC;">1. Forgotten Subscriptions</strong>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">Consumers underestimate their recurring digital subscription charges by an average of 2.5x each month.</p>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">
+                <strong style="color: #F8FAFC;">2. Rigid, Unrealistic Budgets</strong>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">Static spreadsheet budgets ignore changing real-world variables, leading to abandoned plans within 60 days.</p>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">
+                <strong style="color: #F8FAFC;">3. Lack of Actionable Advice</strong>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">Knowing you spent {{ currency_symbol }}400 on dining does not tell you how to reallocate those rupees into long-term compounding assets.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Solution -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: #34D399; display: flex; align-items: center; gap: 0.5rem;">
+            <span>💡</span> The Solution: Intelligent Autonomous Optimisation
+        </h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+            Smart Budget Optimiser serves as a 24/7 personal Chief Financial Officer. It synthesizes income flows and expenditure behavior using modern Large Language Models and statistical finance algorithms.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: rgba(99, 102, 241, 0.15); color: var(--primary); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">AI</div>
+                <div>
+                    <h4 style="font-size: 1.05rem;">Automated Expense Categorisation & Audit</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                        Eliminate manual tagging. Every transaction is parsed semantically and mapped into industry-standard accounts, instantly evaluating if an expenditure is anomalous or wasteful.
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: rgba(16, 185, 129, 0.15); color: var(--emerald); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">50</div>
+                <div>
+                    <h4 style="font-size: 1.05rem;">Adaptive 50/30/20 Budget Calibration</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                        Instead of arbitrary caps, the system builds tailored envelopes based on your net earnings and targets, allowing you to freely adjust limits with instant impact simulations.
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: rgba(245, 158, 11, 0.15); color: var(--amber); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">🎯</div>
+                <div>
+                    <h4 style="font-size: 1.05rem;">Multi-Tier Goal Realisation & Bill Governance</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                        Track liquid emergency funds, asset purchases, and retirement index holdings in one dashboard, supported by proactive bill schedules and PDF executive report downloads.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ready to Start CTA -->
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="/demo/" class="btn btn-outline" style="margin-right: 1rem;">Experience the Public Demo</a>
+        <a href="/register/" class="btn btn-primary">Start Optimising Now →</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Public AI Analysis Demo | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1050px; padding-top: 3rem;">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span class="badge badge-indigo">Interactive Sandbox</span>
+        <h1 style="font-size: 2.6rem; margin: 0.5rem 0 0.75rem;">Public AI Spending & Budget Demo</h1>
+        <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto; font-size: 1.05rem;">
+            Test the AI engine instantly without creating an account. Adjust sample figures or input your own estimates to preview automated diagnostics and savings recommendations.
+        </p>
+        <div style="display: inline-block; margin-top: 1rem; background: rgba(99, 102, 241, 0.1); border: 1px dashed rgba(99, 102, 241, 0.4); border-radius: var(--radius-sm); padding: 0.5rem 1rem; font-size: 0.85rem; color: #C7D2FE;">
+            🔒 <em>Demo sandbox environment: No personal data is stored or collected. Google Sign-In is required for persistent private financial tracking.</em>
+        </div>
+    </div>
+
+    <!-- Interactive Input Form -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
+        <div class="card">
+            <h3 style="margin-bottom: 1.25rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>💵</span> 1. Monthly Net Cash Inflow
+            </h3>
+            <div class="form-group">
+                <label class="form-label" for="demo-income">Total Estimated Monthly Income ({{ currency_symbol }})</label>
+                <input type="number" class="form-control" id="demo-income" value="4800" min="500" step="50">
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">Include primary salary, freelance earnings, or business draws.</p>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 1.25rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>🛒</span> 2. Sample Monthly Expenses Breakdown
+            </h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="demo-rent">Housing / Rent ({{ currency_symbol }})</label>
+                    <input type="number" class="form-control" id="demo-rent" value="1500" step="25">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="demo-groceries">Groceries ({{ currency_symbol }})</label>
+                    <input type="number" class="form-control" id="demo-groceries" value="550" step="25">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="demo-dining">Dining & Delivery ({{ currency_symbol }})</label>
+                    <input type="number" class="form-control" id="demo-dining" value="380" step="10">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="demo-subs">Subscriptions ({{ currency_symbol }})</label>
+                    <input type="number" class="form-control" id="demo-subs" value="125" step="5">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="demo-other">Other Expenses & Utilities ({{ currency_symbol }})</label>
+                <input type="number" class="form-control" id="demo-other" value="450" step="25">
+            </div>
+
+            <button type="button" class="btn btn-primary" id="run-demo-btn" style="width: 100%; margin-top: 0.5rem;">
+                ⚡ Run Instant AI Analysis
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Results Presentation (Scroll Target) -->
+    <div id="demo-results" class="card" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(17, 24, 39, 0.95); margin-bottom: 3rem;">
+        <div class="card-header">
+            <div>
+                <span class="badge badge-emerald">AI Diagnostic Output</span>
+                <h3 style="margin-top: 0.35rem; font-size: 1.4rem;">Evaluation & Optimisation Blueprint</h3>
+            </div>
+            <span class="badge badge-indigo">Heuristic Engine Active</span>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total Outflows</div>
+                <div class="metric-value" id="demo-total-expenses">{{ currency_symbol }}3,005</div>
+                <div class="metric-subtitle">Monthly total</div>
+            </div>
+            <div class="metric-card emerald">
+                <div class="metric-label">Remaining Balance</div>
+                <div class="metric-value" id="demo-remaining-balance" style="color: #34D399;">{{ currency_symbol }}1,795</div>
+                <div class="metric-subtitle">Surplus ready for goals</div>
+            </div>
+            <div class="metric-card amber">
+                <div class="metric-label">Effective Savings Rate</div>
+                <div class="metric-value" id="demo-savings-rate" style="color: #FBBF24;">37%</div>
+                <div class="metric-subtitle">Recommended benchmark: 20%+</div>
+            </div>
+        </div>
+
+        <div style="margin: 1.5rem 0;">
+            <h4 style="margin-bottom: 0.75rem; font-size: 1.1rem;">🚨 Detected Inefficiencies & Waste Audit:</h4>
+            <div id="demo-flagged-list">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </div>
+
+        <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 1.5rem; margin-top: 1.5rem; text-align: center;">
+            <h4 style="font-size: 1.2rem; color: #FFFFFF; margin-bottom: 0.5rem;">Ready to track your real bank statements automatically?</h4>
+            <p style="color: var(--text-secondary); font-size: 0.92rem; max-width: 600px; margin: 0 auto 1.25rem;">
+                Unlock personalized monthly budgets, automated email notifications, historical trend graphs, and the interactive AI Financial Advisor.
+            </p>
+            <a href="/register/" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                Create Free Account & Start Optimising →
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

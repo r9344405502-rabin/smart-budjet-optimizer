@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Monthly AI Reports & Comparison | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div>
+            <span class="badge badge-emerald">Executive Intelligence</span>
+            <h1 style="font-size: 2.2rem; margin-top: 0.25rem;">Monthly Financial Audit & AI Report</h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                Comparative performance audit for <strong>{{ current_month_name }}</strong> vs prior operating cycle.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <button onclick="window.print()" class="btn btn-primary" id="btn-print-pdf">
+                📄 Export / Download PDF
+            </button>
+            <a href="/reports/generate/" class="btn btn-emerald">
+                ⚡ Compile Fresh AI Report
+            </a>
+            <a href="/dashboard/" class="btn btn-outline">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Comparative Analytics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card emerald">
+            <div class="metric-label">Current Cycle Inflow</div>
+            <div class="metric-value" style="color: #34D399;">{{ currency_symbol }}{{ report.total_income|floatformat:2 }}</div>
+            <div class="metric-subtitle">
+                {% if income_delta >= 0 %}
+                    <span style="color: #34D399;">⬆ +{{ currency_symbol }}{{ income_delta|floatformat:2 }} (+{{ income_pct }}%)</span> vs last mo
+                {% else %}
+                    <span style="color: #FB7185;">⬇ -{{ currency_symbol }}{{ income_delta|floatformat:2 }}</span> vs last mo
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Current Outflows</div>
+            <div class="metric-value">{{ currency_symbol }}{{ report.total_expenses|floatformat:2 }}</div>
+            <div class="metric-subtitle">
+                {% if expense_delta <= 0 %}
+                    <span style="color: #34D399;">✓ Trimming spend by {{ currency_symbol }}{{ expense_delta|floatformat:2|slice:"1:" }}</span>
+                {% else %}
+                    <span style="color: #FB7185;">▲ Spend increased by {{ currency_symbol }}{{ expense_delta|floatformat:2 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="metric-card amber">
+            <div class="metric-label">Net Surplus Generated</div>
+            <div class="metric-value" style="color: #FBBF24;">{{ currency_symbol }}{{ report.net_savings|floatformat:2 }}</div>
+            <div class="metric-subtitle">Effective Savings Rate: {{ report.savings_rate }}%</div>
+        </div>
+    </div>
+
+    <!-- Executive Summary & AI Findings -->
+    <div class="card" style="margin-bottom: 2rem; border-color: rgba(99, 102, 241, 0.3);">
+        <div class="card-header">
+            <div>
+                <span class="badge badge-indigo">AI Synthesis</span>
+                <h3 style="margin-top: 0.25rem;">Executive Performance Summary</h3>
+            </div>
+            <span class="badge badge-emerald">Audit Verified</span>
+        </div>
+        <p style="color: #E2E8F0; font-size: 0.98rem; line-height: 1.7;">
+            {{ report.ai_summary }}
+        </p>
+    </div>
+
+    <!-- Recommendations & Waste Breakdown -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem;">
+        <div class="card">
+            <div class="card-header">
+                <h3>Actionable AI Recommendations</h3>
+                <span class="badge badge-emerald">Priority Tactics</span>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; color: #CBD5E1; font-size: 0.92rem;">
+                {% for rec in report.ai_recommendations %}
+                <li style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                    <span style="color: #10B981; font-weight: 700;">✔</span>
+                    <span>{{ rec }}</span>
+                </li>
+                {% empty %}
+                <li>✔ Automate at least 20% of net monthly income directly into liquid reserves.</li>
+                <li>✔ Audit discretionary dining out and delivery markups.</li>
+                <li>✔ Rebalance monthly subscriptions to eliminate dormant recurring charges.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Wealth & Investment Guidance</h3>
+                <span class="badge badge-indigo">Compounding Alpha</span>
+            </div>
+            <p style="color: #CBD5E1; font-size: 0.92rem; line-height: 1.6;">
+                {% if report.ai_investment_suggestions %}
+                    {{ report.ai_investment_suggestions }}
+                {% else %}
+                    Surplus capital beyond your 3-6 month emergency reserve should be systematically deployed into broad-market index funds (S&P 500 / Total Stock Market). By automating {{ currency_symbol }}500 monthly at an 8% expected annualized return, you build over {{ currency_symbol }}91,000 in compounding assets within 10 years.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

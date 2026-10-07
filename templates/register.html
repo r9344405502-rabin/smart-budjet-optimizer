@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Account | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; padding-top: 3.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <span class="badge badge-emerald">Get Started Free</span>
+        <h1 style="font-size: 2.2rem; margin: 0.5rem 0 0.5rem;">Create Your Account</h1>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            Join Smart Budget Optimiser and take control of your financial destiny.
+        </p>
+    </div>
+
+    <div class="card" style="border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: var(--shadow-card);">
+        <form method="POST" action="/register/">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Create strong password" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirm_password">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Repeat your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-emerald" id="btn-register-submit" style="width: 100%; padding: 0.85rem; font-size: 1rem; margin-top: 1rem;">
+                Create Account & Set Up Finances →
+            </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); text-align: center; font-size: 0.88rem; color: var(--text-secondary);">
+            Already have an account? 
+            <a href="/login/" style="color: var(--emerald); font-weight: 600; text-decoration: underline;">Sign In here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

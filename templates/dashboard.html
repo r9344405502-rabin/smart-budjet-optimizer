@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+    <!-- Welcome Header & Quick Actions -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div>
+            <span class="badge badge-emerald">Real-Time Fiscal Command</span>
+            <h1 style="font-size: 2.2rem; margin-top: 0.25rem;">Financial Overview — {{ current_month_name }}</h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                Logged in as <strong>{{ user.username }}</strong>. AI Engine active & evaluating live ledger.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <a href="/expenses/?action=new" class="btn btn-primary" id="btn-quick-add-expense">
+                + Add Expense (AI Auto-Categorized)
+            </a>
+            <a href="/income/?action=new" class="btn btn-emerald" id="btn-quick-add-income">
+                + Add Income
+            </a>
+            <a href="/assistant/" class="btn btn-outline" id="btn-open-assistant">
+                🤖 AI Advisor
+            </a>
+        </div>
+    </div>
+
+    <!-- Core Metrics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card emerald">
+            <div class="metric-label">Total Monthly Inflow</div>
+            <div class="metric-value" style="color: #34D399;">{{ currency_symbol }}{{ total_income|floatformat:2 }}</div>
+            <div class="metric-subtitle">Across active revenue streams</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Total Monthly Outflows</div>
+            <div class="metric-value">{{ currency_symbol }}{{ total_expenses|floatformat:2 }}</div>
+            <div class="metric-subtitle">{{ expense_count }} logged transactions</div>
+        </div>
+
+        <div class="metric-card {% if remaining_balance >= 0 %}emerald{% else %}rose{% endif %}">
+            <div class="metric-label">Remaining Net Balance</div>
+            <div class="metric-value" style="color: {% if remaining_balance >= 0 %}#34D399{% else %}#FB7185{% endif %};">
+                {{ currency_symbol }}{{ remaining_balance|floatformat:2 }}
+            </div>
+            <div class="metric-subtitle">Surplus available for wealth goals</div>
+        </div>
+
+        <div class="metric-card amber">
+            <div class="metric-label">Effective Savings Rate</div>
+            <div class="metric-value" style="color: #FBBF24;">{{ savings_rate }}%</div>
+            <div class="metric-subtitle">Target: 20%+</div>
+        </div>
+    </div>
+
+    <!-- AI Unwanted Expenses Alert Section -->
+    {% if unwanted_expenses %}
+    <div class="card" style="border: 1px solid rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.05); margin-bottom: 2rem;">
+        <div class="card-header" style="margin-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.25rem;">🚨</span>
+                <h3 style="color: #FDA4AF; font-size: 1.15rem;">AI Alert: {{ unwanted_expenses|length }} Potentially Unwanted / Wasteful Expenses Identified</h3>
+            </div>
+            <span class="badge badge-rose">Action Recommended</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+            Our anomaly detection algorithm flagged recurring fees or non-essential spikes that can be trimmed to boost your monthly net surplus.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+            {% for item in unwanted_expenses %}
+            <div style="background: rgba(17, 24, 39, 0.85); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                <div>
+                    <strong style="color: #F8FAFC; font-size: 0.95rem;">{{ item.title }}</strong>
+                    <span class="badge badge-rose" style="margin-left: 0.5rem;">{{ currency_symbol }}{{ item.amount }}</span>
+                    <span class="badge badge-indigo" style="margin-left: 0.25rem;">{{ item.ai_category }}</span>
+                    <p style="color: #94A3B8; font-size: 0.82rem; margin-top: 0.25rem;">
+                        💡 {{ item.ai_flag_reason|default:"Recurring charge detected without regular utility or disproportionate to category envelope." }}
+                    </p>
+                </div>
+                <a href="/expenses/delete/{{ item.id }}/" onclick="return confirm('Remove this unwanted expense?')" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-color: rgba(244, 63, 94, 0.4); color: #FDA4AF;">
+                    Cancel / Delete
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Visual Breakdown & AI Budget Calibration Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+        <!-- Left: Expense Category Distribution -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Spending Distribution by Category</h3>
+                <a href="/expenses/" style="font-size: 0.85rem; color: var(--primary);">View Details →</a>
+            </div>
+            <div style="max-height: 280px; display: flex; justify-content: center;">
+                <canvas id="categoryDonutChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Right: AI Budget Allocation Progress -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3>AI Budget Limits vs Actual Spend</h3>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">Calibrated for {{ current_month_name }}</p>
+                </div>
+                <a href="/budget/" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Edit Budget</a>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+                {% for item in budget_progress %}
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                        <strong>{{ item.category }}</strong>
+                        <span style="color: var(--text-secondary);">{{ currency_symbol }}{{ item.spent|floatformat:2 }} / {{ currency_symbol }}{{ item.limit|floatformat:2 }} ({{ item.percent }}%)</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill {% if item.percent > 100 %}danger{% elif item.percent > 85 %}warning{% endif %}" style="width: {% if item.percent > 100 %}100{% else %}{{ item.percent }}{% endif %}%;"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: var(--text-muted); font-size: 0.88rem;">No budget generated yet. <a href="/budget/generate/" style="color: var(--primary);">Click here to generate your first AI budget</a>.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Goals & Bills Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+        <!-- Goals Tracker -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Active Financial Goals</h3>
+                <a href="/goals/" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">+ New Goal</a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                {% for goal in goals %}
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong style="color: #F8FAFC;">{{ goal.name }}</strong>
+                        <span class="badge badge-emerald">{{ goal.goal_type }}</span>
+                    </div>
+                    <div style="font-size: 1.15rem; font-weight: 700; color: #34D399;">
+                        {{ currency_symbol }}{{ goal.current_amount|floatformat:2 }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400;">/ {{ currency_symbol }}{{ goal.target_amount|floatformat:2 }}</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: {{ goal.progress_percentage }}%;"></div>
+                    </div>
+                    {% if goal.ai_suggestion %}
+                    <p style="font-size: 0.8rem; color: #94A3B8; margin-top: 0.5rem;">
+                        💡 {{ goal.ai_suggestion }}
+                    </p>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p style="color: var(--text-muted); font-size: 0.88rem;">No goals established yet. <a href="/goals/" style="color: var(--primary);">Create your first savings goal</a>.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Upcoming Bills -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Upcoming Bills & Recurring Due Dates</h3>
+                <a href="/bills/" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Manage Bills</a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                {% for bill in upcoming_bills %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.02); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div>
+                        <strong style="display: block; font-size: 0.92rem;">{{ bill.name }}</strong>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Due: {{ bill.due_date }} ({{ bill.category }})</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700; color: #F8FAFC;">{{ currency_symbol }}{{ bill.amount }}</div>
+                        <a href="/bills/toggle/{{ bill.id }}/" style="font-size: 0.75rem; color: #10B981;">Mark Paid ✓</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: var(--text-muted); font-size: 0.88rem;">All current bills paid! No pending charges for this period.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Prepare Category Donut Chart
+    const categoryLabels = {{ chart_labels|safe }};
+    const categoryData = {{ chart_data|safe }};
+
+    if (categoryLabels.length > 0) {
+        const ctx = document.getElementById('categoryDonutChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    data: categoryData,
+                    backgroundColor: [
+                        '#6366F1', '#10B981', '#F59E0B', '#EC4899', 
+                        '#06B6D4', '#8B5CF6', '#F43F5E', '#14B8A6'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#94A3B8', boxWidth: 12, font: { size: 11 } }
+                    }
+                },
+                cutout: '72%'
+            }
+        });
+    }
+</script>
+{% endblock %}

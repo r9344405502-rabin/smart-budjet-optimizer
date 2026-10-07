@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Income Management | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div>
+            <span class="badge badge-emerald">Cash Inflow Architecture</span>
+            <h1 style="font-size: 2.2rem; margin-top: 0.25rem;">Income Streams</h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                Manage salary disbursements, consulting retainers, and investment yield.
+            </p>
+        </div>
+        <div>
+            <a href="/dashboard/" class="btn btn-outline">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Add Income Form Card -->
+    <div class="card" style="margin-bottom: 2.5rem; border: 1px solid rgba(16, 185, 129, 0.3);">
+        <h3 style="margin-bottom: 1.25rem; font-size: 1.2rem; color: #34D399;">+ Add Revenue / Income Stream</h3>
+        <form method="POST" action="/income/add/">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="source_name">Income Source / Employer</label>
+                    <input type="text" class="form-control" id="source_name" name="source_name" placeholder="e.g. Primary Tech Salary" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="amount">Monthly Net Amount ({{ currency_symbol }})</label>
+                    <input type="number" step="0.01" class="form-control" id="amount" name="amount" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="category">Stream Type</label>
+                    <select class="form-control" id="category" name="category">
+                        <option value="Salary">Salary / Employment</option>
+                        <option value="Freelance">Freelancing / Side Hustle</option>
+                        <option value="Investment">Investments & Dividends</option>
+                        <option value="Business">Business Income</option>
+                        <option value="Other">Other Income</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="date">Effective Date</label>
+                    <input type="date" class="form-control" id="date" name="date" value="{{ today|date:'Y-m-d' }}" required>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer;">
+                    <input type="checkbox" name="is_recurring" checked> Recurring Monthly Inflow
+                </label>
+                <button type="submit" class="btn btn-emerald" style="padding: 0.65rem 1.75rem;">
+                    Save Income Stream
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Income Table -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Active Inflow Sources</h3>
+            <span class="badge badge-emerald">Total: {{ currency_symbol }}{{ total_income|floatformat:2 }}</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Source / Stream</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Recurrence</th>
+                        <th>Date Registered</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inc in incomes %}
+                    <tr>
+                        <td><strong>{{ inc.source_name }}</strong></td>
+                        <td><span class="badge badge-indigo">{{ inc.category }}</span></td>
+                        <td style="font-weight: 700; color: #34D399;">{{ currency_symbol }}{{ inc.amount|floatformat:2 }}</td>
+                        <td>
+                            {% if inc.is_recurring %}
+                                <span class="badge badge-emerald">Monthly Recurring</span>
+                            {% else %}
+                                <span class="badge badge-amber">One-Off</span>
+                            {% endif %}
+                        </td>
+                        <td style="color: var(--text-muted); font-size: 0.85rem;">{{ inc.date }}</td>
+                        <td>
+                            <a href="/income/delete/{{ inc.id }}/" onclick="return confirm('Delete this income stream?')" style="color: #FB7185; font-size: 0.85rem;">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            No income streams logged. Add your first salary or retainer above!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

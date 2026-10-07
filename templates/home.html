@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Smart Budget Optimiser | AI-Powered Personal Finance Assistant{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="home-hero">
+    <div class="hero-pill">
+        <span>✨ Next-Gen Financial Intelligence Engine</span>
+    </div>
+    <h1 class="hero-title">Master Your Money with Real-Time AI Optimisation</h1>
+    <p class="hero-description">
+        Smart Budget Optimiser automatically categorises your transactions, exposes hidden subscription waste, and generates precision 50/30/20 budgets tailored to your personal wealth goals.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/register/" class="btn btn-primary" id="hero-get-started-btn" style="padding: 0.85rem 2rem; font-size: 1.05rem;">
+            🚀 Create Free Account
+        </a>
+        <a href="/login/" class="btn btn-outline" id="hero-signin-btn" style="padding: 0.85rem 2rem; font-size: 1.05rem;">
+            🔑 Sign In
+        </a>
+        <a href="/demo/" class="btn btn-outline" id="hero-try-demo-btn" style="padding: 0.85rem 2rem; font-size: 1.05rem;">
+            🔍 Interactive Demo
+        </a>
+    </div>
+</section>
+
+<!-- Live AI Analysis Preview Showcase -->
+<div class="container" style="padding-top: 0;">
+    <div class="card" style="border: 1px solid rgba(99, 102, 241, 0.3); background: rgba(17, 24, 39, 0.9); box-shadow: var(--shadow-glow);">
+        <div class="card-header">
+            <div>
+                <span class="badge badge-indigo">Live AI Telemetry</span>
+                <h3 style="margin-top: 0.4rem;">Real-Time Financial Diagnostics</h3>
+            </div>
+            <span class="badge badge-emerald">Optimal Fiscal State</span>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card emerald">
+                <div class="metric-label">Monthly Inflow</div>
+                <div class="metric-value" style="color: #34D399;">{{ currency_symbol }}5,350.00</div>
+                <div class="metric-subtitle">⬆ +8.4% vs last cycle</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Allocated Spend</div>
+                <div class="metric-value">{{ currency_symbol }}3,120.00</div>
+                <div class="metric-subtitle">⚡ 58.3% of total revenue</div>
+            </div>
+            <div class="metric-card rose">
+                <div class="metric-label">AI Flagged Waste</div>
+                <div class="metric-value" style="color: #FB7185;">{{ currency_symbol }}157.20</div>
+                <div class="metric-subtitle">⚠️ 2 recurring unwanted items</div>
+            </div>
+            <div class="metric-card amber">
+                <div class="metric-label">Projected Surplus</div>
+                <div class="metric-value" style="color: #FBBF24;">{{ currency_symbol }}2,072.80</div>
+                <div class="metric-subtitle">🎯 Directed to wealth goals</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(244, 63, 94, 0.08); border-left: 4px solid var(--rose); padding: 1.25rem 1.5rem; border-radius: var(--radius-sm); margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <strong style="color: #FDA4AF; display: block; font-size: 0.95rem;">🤖 AI Anomaly Detected: Dormant Gym Membership & Excessive Takeout Delivery</strong>
+                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 0.25rem;">
+                    Identified {{ currency_symbol }}79.00 billed without check-in activity for 45 days, plus 6 DoorDash markups. Redirecting this to your <strong>S&P 500 Index Goal</strong> compounds to {{ currency_symbol }}23,400 over 7 years.
+                </p>
+            </div>
+            <a href="/login/" class="btn btn-outline" style="font-size: 0.85rem; border-color: rgba(244, 63, 94, 0.4);">Resolve Anomaly →</a>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="container">
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+        <span class="badge badge-indigo">Architecture</span>
+        <h2 style="font-size: 2.2rem; margin-top: 0.5rem;">How Smart Budget Optimiser Works</h2>
+        <p style="color: var(--text-secondary); max-width: 600px; margin: 0.5rem auto 0;">
+            A complete 3-tier algorithmic pipeline engineered to maximize your monthly net savings.
+        </p>
+    </div>
+
+    <div class="features-grid" style="margin-top: 0;">
+        <div class="feature-card">
+            <div class="feature-icon-wrapper">📥</div>
+            <h3>1. Streamlined Ingestion</h3>
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.5rem;">
+                Easily log recurring income and daily expenditures. The system processes salary streams, side projects, and receipts with zero clutter.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon-wrapper">🧠</div>
+            <h3>2. AI-Powered Categorisation</h3>
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.5rem;">
+                OpenAI models parse transaction semantics to automatically assign categories (Housing, Utilities, Dining, Subscriptions) and highlight impulse leaks.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon-wrapper">📈</div>
+            <h3>3. Dynamic Budget Generation</h3>
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.5rem;">
+                The platform computes a tailored budget respecting your savings targets. Modify allocations at any time with immediate real-time recalculated forecasts.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Savings & Goals Feature Highlights -->
+<div class="container" style="background: rgba(17, 24, 39, 0.4); border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); padding: 3rem 2rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; align-items: center;">
+        <div>
+            <span class="badge badge-emerald">Savings & Goal Accelerator</span>
+            <h2 style="font-size: 2.2rem; margin: 0.75rem 0 1rem;">Turn Spare Change into Multi-Year Wealth</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Set flexible goals across liquid Emergency Funds, Capital Purchases (laptops, vehicles), and Long-Term Index Investments. Our AI advisor tracks deadlines and suggests ideal weekly contribution schedules.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; color: #CBD5E1; font-size: 0.95rem;">
+                <li>✔ Automated visual milestones and contribution tracking</li>
+                <li>✔ Intelligent bill reminders to prevent costly late penalties</li>
+                <li>✔ Instant PDF performance report generation and historical comparisons</li>
+            </ul>
+        </div>
+        <div class="card" style="background: var(--bg-card); border-color: rgba(255, 255, 255, 0.1);">
+            <div class="card-header">
+                <strong>Emergency Reserve Target</strong>
+                <span class="badge badge-emerald">65% Reached</span>
+            </div>
+            <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-heading); color: #FFFFFF;">
+                {{ currency_symbol }}7,800.00 <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 400;">/ {{ currency_symbol }}12,000.00</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: 65%;"></div>
+            </div>
+            <p style="font-size: 0.82rem; color: #94A3B8; margin-top: 0.75rem;">
+                💡 <em>AI Strategy: At current {{ currency_symbol }}450/week savings pace, this goal will be 100% fulfilled in 9.3 weeks.</em>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Call To Action -->
+<section class="container" style="text-align: center; padding: 5rem 1.5rem 3rem;">
+    <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Take Absolute Control of Your Capital?</h2>
+    <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto 2rem; font-size: 1.1rem;">
+        Join Smart Budget Optimiser today. Secure authentication powered by Google, zero manual spreadsheet bookkeeping, and continuous financial AI oversight.
+    </p>
+    <a href="/register/" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+        Get Started Now — Create Free Account →
+    </a>
+</section>
+{% endblock %}

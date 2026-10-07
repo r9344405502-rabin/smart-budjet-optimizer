@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Initial Financial Setup | Smart Budget Optimiser{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px; padding-top: 3.5rem;">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span class="badge badge-emerald">Step 1 of 1</span>
+        <h1 style="font-size: 2.3rem; margin: 0.5rem 0 0.5rem;">Welcome to Smart Budget Optimiser!</h1>
+        <p style="color: var(--text-secondary); font-size: 1rem;">
+            Let's configure your baseline financial profile so the AI engine can calibrate your initial budget and goals.
+        </p>
+    </div>
+
+    <div class="card" style="border: 1px solid rgba(99, 102, 241, 0.4);">
+        <form method="POST" action="/setup/">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="income_source">Primary Income Stream Name</label>
+                <input type="text" class="form-control" id="income_source" name="income_source" placeholder="e.g. Software Engineer Salary" value="Primary Salary" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="monthly_income">Estimated Net Monthly Inflow ({{ currency_symbol }})</label>
+                <input type="number" step="0.01" class="form-control" id="monthly_income" name="monthly_income" placeholder="e.g. 4500" value="4500" required>
+                <small style="color: var(--text-muted); font-size: 0.8rem;">Your take-home cash after taxes.</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="savings_target">Monthly Savings & Investment Target ({{ currency_symbol }})</label>
+                <input type="number" step="0.01" class="form-control" id="savings_target" name="savings_target" placeholder="e.g. 1000" value="900" required>
+                <small style="color: var(--text-muted); font-size: 0.8rem;">Recommended baseline: 20% of net monthly income ({{ currency_symbol }}900.00).</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="primary_goal">Top Financial Priority</label>
+                <select class="form-control" id="primary_goal" name="primary_goal">
+                    <option value="Emergency Reserve">Build 3-6 Month Emergency Cash Reserve</option>
+                    <option value="Pay Off Credit Debt">Aggressively Eliminate High-Interest Debt</option>
+                    <option value="Long-Term Index Wealth">Maximize S&P 500 / Retirement Investments</option>
+                    <option value="Major Asset Purchase">Save for Home Downpayment or Vehicle</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.85rem; font-size: 1rem;">
+                🚀 Generate My AI Financial Dashboard →
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
